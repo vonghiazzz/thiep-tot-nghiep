@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chúc Mừng Tân Cử Nhân!</title>
+  <link href="https://googleapis.com" rel="stylesheet">
+  <script src="https://jsdelivr.net"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle at top right, #1e293b, #090d16 70%);
+      font-family: 'Montserrat', sans-serif;
+      padding: 20px;
+      overflow-x: hidden;
+      perspective: 1000px;
+    }
+
+    /* Hiệu ứng đốm sáng nền */
+    .glow {
+      position: fixed;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.18), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-1 { top: 10%; left: 15%; }
+    .glow-2 { bottom: 10%; right: 15%; }
+
+    /* Khung thiệp chính */
+    .card {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(251, 191, 36, 0.35);
+      border-radius: 28px;
+      padding: 28px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(251, 191, 36, 0.08);
+      transition: transform 0.15s ease-out;
+      transform-style: preserve-3d;
+    }
+
+    /* Khung ảnh tốt nghiệp */
+    .photo-frame {
+      position: relative;
+      width: 100%;
+      height: 270px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid rgba(251, 191, 36, 0.5);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      margin-bottom: 24px;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .card:hover .photo-frame img {
+      transform: scale(1.05);
+    }
+
+    /* Nhãn năm tốt nghiệp */
+    .year-tag {
+      display: inline-block;
+      padding: 6px 18px;
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(217, 119, 6, 0.2));
+      border: 1px solid rgba(251, 191, 36, 0.5);
+      color: #fcd34d;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* Tiêu đề ánh kim chuyển động */
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 10px;
+      background: linear-gradient(to right, #fde68a, #f59e0b, #fef3c7, #d97706);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: shine 3.5s linear infinite;
+    }
+
+    @keyframes shine {
+      to { background-position: 200% center; }
+    }
+
+    .recipient-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+
+    p {
+      color: #cbd5e1;
+      font-size: 15px;
+      line-height: 1.7;
+      margin-bottom: 26px;
+      font-weight: 400;
+    }
+
+    /* Nút bấm bắn pháo hoa */
+    .btn-celebrate {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #090d16;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 800;
+      font-size: 14px;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 20px -5px rgba(245, 158, 11, 0.5);
+      transition: all 0.25s ease;
+    }
+
+    .btn-celebrate:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 15px 25px -5px rgba(245, 158, 11, 0.7);
+    }
+
+    .btn-celebrate:active {
+      transform: translateY(1px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <div class="card" id="tiltCard">
+    <div class="photo-frame">
+      <!-- BƯỚC 1: Thay link ảnh kỷ yếu / ảnh tốt nghiệp của bạn vào mục src bên dưới -->
+      <img src="https://unsplash.com" alt="Ảnh Tốt Nghiệp">
+    </div>
+
+    <div class="year-tag">🎓 Class of 2026</div>
+    <h1>Chúc Mừng Tốt Nghiệp</h1>
+    
+    <!-- BƯỚC 2: Thay tên người nhận vào đây -->
+    <div class="recipient-name">Tân Cử Nhân Nguyễn Văn A</div>
+    
+    <!-- BƯỚC 3: Thay lời chúc của bạn vào đây -->
+    <p>
+      Hành trình đèn sách đã khép lại với thật nhiều dấu ấn rực rỡ. Chúc bạn luôn giữ vững ngọn lửa đam mê, tự tin sải bước và gặt hái thật nhiều thành công rực rỡ trên chặng đường sự nghiệp phía trước!
+    </p>
+
+    <button class="btn-celebrate" onclick="fireConfetti()">
+      🎉 Tung Hoa Chúc Mừng
+    </button>
+  </div>
+
+  <script>
+    // Hiệu ứng bắn pháo giấy vàng kim & trắng
+    function fireConfetti() {
+      confetti({
+        particleCount: 85,
+        spread: 70,
+        origin: { y: 0.65 },
+        colors: ['#fbbf24', '#f59e0b', '#ffffff', '#fde68a']
+      });
+    }
+
+    // Tự động bắn pháo hoa nhẹ khi vừa mở thiệp
+    window.addEventListener('load', () => {
+      setTimeout(fireConfetti, 400);
+    });
+
+    // Hiệu ứng nghiêng thiệp 3D theo con trỏ chuột
+    const card = document.getElementById('tiltCard');
+    document.addEventListener('mousemove', (e) => {
+      if (window.innerWidth < 768) return; // Tắt nghiêng trên điện thoại để mượt hơn
+      const xAxis = (window.innerWidth / 2 - e.pageX) / 30;
+      const yAxis = (window.innerHeight / 2 - e.pageY) / 30;
+      card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
+    });
+
+    document.addEventListener('mouseleave', () => {
+      card.style.transform = `rotateY(0deg) rotateX(0deg)`;
+    });
+  </script>
+</body>
+</html>
