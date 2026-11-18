@@ -8,96 +8,142 @@
   <script src="https://jsdelivr.net"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    
+
     body {
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      background: radial-gradient(circle at top right, #1e293b, #090d16 70%);
+      background: radial-gradient(circle at 20% 20%, #1e293b 0%, #090d16 75%);
       font-family: 'Montserrat', sans-serif;
-      padding: 20px;
+      padding: 24px 16px;
       overflow-x: hidden;
-      perspective: 1000px;
+      color: #f8fafc;
     }
 
-    /* Hiệu ứng đốm sáng nền */
-    .glow {
+    /* Các hạt ánh sáng lơ lửng trang trí nền */
+    .sparkles {
       position: fixed;
-      width: 300px;
-      height: 300px;
-      background: radial-gradient(circle, rgba(245, 158, 11, 0.18), transparent 70%);
-      border-radius: 50%;
+      inset: 0;
       pointer-events: none;
+      background-image: 
+        radial-gradient(2px 2px at 15% 25%, rgba(251, 191, 36, 0.4), transparent),
+        radial-gradient(2px 2px at 80% 15%, rgba(255, 255, 255, 0.3), transparent),
+        radial-gradient(3px 3px at 70% 80%, rgba(251, 191, 36, 0.35), transparent),
+        radial-gradient(2px 2px at 25% 75%, rgba(255, 255, 255, 0.25), transparent);
       z-index: 0;
     }
-    .glow-1 { top: 10%; left: 15%; }
-    .glow-2 { bottom: 10%; right: 15%; }
 
-    /* Khung thiệp chính */
-    .card {
+    /* Khung chứa hiệu ứng lật 3D */
+    .scene {
+      width: 100%;
+      max-width: 480px;
+      min-height: 670px;
+      perspective: 1400px;
       position: relative;
       z-index: 1;
+    }
+
+    .card-inner {
       width: 100%;
-      max-width: 460px;
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(251, 191, 36, 0.35);
-      border-radius: 28px;
-      padding: 28px;
-      text-align: center;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7), inset 0 0 20px rgba(251, 191, 36, 0.08);
-      transition: transform 0.15s ease-out;
+      min-height: 670px;
+      position: relative;
+      transition: transform 0.85s cubic-bezier(0.34, 1.56, 0.64, 1);
       transform-style: preserve-3d;
     }
 
-    /* Khung ảnh tốt nghiệp */
-    .photo-frame {
-      position: relative;
-      width: 100%;
-      height: 270px;
-      border-radius: 20px;
-      overflow: hidden;
-      border: 2px solid rgba(251, 191, 36, 0.5);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      margin-bottom: 24px;
+    .card-inner.is-flipped {
+      transform: rotateY(180deg);
     }
 
-    .photo-frame img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
+    /* Thiết kế chung cho cả 2 mặt thiệp */
+    .card-face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: linear-gradient(160deg, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(251, 191, 36, 0.4);
+      border-radius: 30px;
+      padding: 28px 26px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), inset 0 0 25px rgba(251, 191, 36, 0.08);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
-    .card:hover .photo-frame img {
-      transform: scale(1.05);
+    /* Viền hoa văn góc vàng kim */
+    .corner {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: #fbbf24;
+      border-style: solid;
+      opacity: 0.7;
+      pointer-events: none;
     }
+    .corner.tl { top: 14px; left: 14px; border-width: 2px 0 0 2px; border-top-left-radius: 12px; }
+    .corner.tr { top: 14px; right: 14px; border-width: 2px 2px 0 0; border-top-right-radius: 12px; }
+    .corner.bl { bottom: 14px; left: 14px; border-width: 0 0 2px 2px; border-bottom-left-radius: 12px; }
+    .corner.br { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; border-bottom-right-radius: 12px; }
 
-    /* Nhãn năm tốt nghiệp */
-    .year-tag {
-      display: inline-block;
-      padding: 6px 18px;
-      background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(217, 119, 6, 0.2));
-      border: 1px solid rgba(251, 191, 36, 0.5);
-      color: #fcd34d;
-      border-radius: 50px;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: 2px;
+    /* ================= MẶT TRƯỚC THIỆP ================= */
+    .top-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
       text-transform: uppercase;
+      color: #fcd34d;
       margin-bottom: 14px;
     }
 
-    /* Tiêu đề ánh kim chuyển động */
+    .photo-wrapper {
+      position: relative;
+      width: 100%;
+      height: 250px;
+      border-radius: 20px;
+      padding: 5px;
+      background: linear-gradient(135deg, #fde68a, #d97706, #fef3c7);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      margin-bottom: 18px;
+    }
+
+    .photo-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 16px;
+      display: block;
+    }
+
+    .cap-badge {
+      position: absolute;
+      bottom: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #0f172a;
+      border: 1.5px solid #fbbf24;
+      color: #fbbf24;
+      padding: 5px 16px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    }
+
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 32px;
-      font-weight: 700;
-      line-height: 1.25;
-      margin-bottom: 10px;
-      background: linear-gradient(to right, #fde68a, #f59e0b, #fef3c7, #d97706);
+      font-size: 30px;
+      text-align: center;
+      margin-top: 10px;
+      background: linear-gradient(to right, #fef3c7, #fbbf24, #fde68a, #d97706);
       background-size: 200% auto;
       color: transparent;
       -webkit-background-clip: text;
@@ -109,106 +155,199 @@
       to { background-position: 200% center; }
     }
 
-    .recipient-name {
+    .name {
+      text-align: center;
       font-size: 20px;
       font-weight: 800;
       color: #ffffff;
-      letter-spacing: 0.5px;
-      margin-bottom: 14px;
+      margin-top: 4px;
     }
 
-    p {
+    .major-info {
+      text-align: center;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+
+    /* Đường kẻ trang trí hoa văn */
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 14px 0;
+      color: #fbbf24;
+      font-size: 14px;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(to right, transparent, rgba(251, 191, 36, 0.5), transparent);
+    }
+
+    .short-wish {
+      text-align: center;
+      font-size: 14.5px;
+      line-height: 1.65;
       color: #cbd5e1;
-      font-size: 15px;
-      line-height: 1.7;
-      margin-bottom: 26px;
-      font-weight: 400;
+      padding: 0 6px;
     }
 
-    /* Nút bấm bắn pháo hoa */
-    .btn-celebrate {
+    /* Khung trích dẫn nhỏ */
+    .quote-box {
+      background: rgba(251, 191, 36, 0.07);
+      border-left: 3px solid #fbbf24;
+      padding: 10px 14px;
+      border-radius: 0 12px 12px 0;
+      margin: 14px 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: #fde68a;
+    }
+
+    /* Nhóm nút bấm */
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 13px 16px;
+      border-radius: 50px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.25s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 14px 32px;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
+      gap: 6px;
+    }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #fbbf24, #d97706);
       color: #090d16;
-      font-family: 'Montserrat', sans-serif;
-      font-weight: 800;
-      font-size: 14px;
       border: none;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 10px 20px -5px rgba(245, 158, 11, 0.5);
-      transition: all 0.25s ease;
+      box-shadow: 0 8px 20px -4px rgba(245, 158, 11, 0.45);
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 24px -4px rgba(245, 158, 11, 0.65); }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fde68a;
+      border: 1px solid rgba(251, 191, 36, 0.5);
+    }
+    .btn-outline:hover { background: rgba(251, 191, 36, 0.15); transform: translateY(-2px); }
+
+    /* ================= MẶT SAU THIỆP (LỜI CHÚC CHI TIẾT) ================= */
+    .card-back {
+      transform: rotateY(180deg);
     }
 
-    .btn-celebrate:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 15px 25px -5px rgba(245, 158, 11, 0.7);
+    .back-header {
+      text-align: center;
+      margin-bottom: 10px;
     }
 
-    .btn-celebrate:active {
-      transform: translateY(1px);
+    .back-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: #fbbf24;
+    }
+
+    .letter-content {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 6px;
+      font-size: 14.5px;
+      line-height: 1.75;
+      color: #e2e8f0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Thanh cuộn tinh tế cho phần thư dài */
+    .letter-content::-webkit-scrollbar { width: 4px; }
+    .letter-content::-webkit-scrollbar-thumb { background: rgba(251, 191, 36, 0.4); border-radius: 10px; }
+
+    .wish-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      background: rgba(15, 23, 42, 0.5);
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px solid rgba(251, 191, 36, 0.2);
+    }
+
+    .wish-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13.5px;
+      color: #cbd5e1;
+    }
+
+    .signature {
+      text-align: right;
+      margin-top: 8px;
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 19px;
+      color: #fde68a;
     }
   </style>
 </head>
 <body>
 
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
+  <div class="sparkles"></div>
 
-  <div class="card" id="tiltCard">
-    <div class="photo-frame">
-      <!-- BƯỚC 1: Thay link ảnh kỷ yếu / ảnh tốt nghiệp của bạn vào mục src bên dưới -->
-      <img src="https://unsplash.com" alt="Ảnh Tốt Nghiệp">
-    </div>
+  <div class="scene">
+    <div class="card-inner" id="cardInner">
+      
+      <!-- ==================== MẶT TRƯỚC THIỆP ==================== -->
+      <div class="card-face card-front">
+        <div class="corner tl"></div><div class="corner tr"></div>
+        <div class="corner bl"></div><div class="corner br"></div>
 
-    <div class="year-tag">🎓 Class of 2026</div>
-    <h1>Chúc Mừng Tốt Nghiệp</h1>
-    
-    <!-- BƯỚC 2: Thay tên người nhận vào đây -->
-    <div class="recipient-name">Tân Cử Nhân Nguyễn Văn A</div>
-    
-    <!-- BƯỚC 3: Thay lời chúc của bạn vào đây -->
-    <p>
-      Hành trình đèn sách đã khép lại với thật nhiều dấu ấn rực rỡ. Chúc bạn luôn giữ vững ngọn lửa đam mê, tự tin sải bước và gặt hái thật nhiều thành công rực rỡ trên chặng đường sự nghiệp phía trước!
-    </p>
+        <div>
+          <div class="top-badge">✨ CONGRATULATIONS ✨</div>
 
-    <button class="btn-celebrate" onclick="fireConfetti()">
-      🎉 Tung Hoa Chúc Mừng
-    </button>
-  </div>
+          <div class="photo-wrapper">
+            <!-- 1. THAY LINK ẢNH TỐT NGHIỆP CỦA BẠN VÀO ĐÂY -->
+            <img src="https://unsplash.com" alt="Ảnh Tốt Nghiệp">
+            <!-- 2. THAY NIÊN KHÓA / NGÀY TỐT NGHIỆP -->
+            <div class="cap-badge">🎓 Niên Khóa 2022 – 2026</div>
+          </div>
 
-  <script>
-    // Hiệu ứng bắn pháo giấy vàng kim & trắng
-    function fireConfetti() {
-      confetti({
-        particleCount: 85,
-        spread: 70,
-        origin: { y: 0.65 },
-        colors: ['#fbbf24', '#f59e0b', '#ffffff', '#fde68a']
-      });
-    }
+          <h1>Chúc Mừng Tốt Nghiệp</h1>
+          <!-- 3. THAY TÊN NGƯỜI NHẬN -->
+          <div class="name">Tân Cử Nhân Nguyễn Văn A</div>
+          <!-- 4. THAY TÊN TRƯỜNG / CHUYÊN NGÀNH -->
+          <div class="major-info">Chuyên ngành Công nghệ Thông tin • ĐH Bách Khoa</div>
 
-    // Tự động bắn pháo hoa nhẹ khi vừa mở thiệp
-    window.addEventListener('load', () => {
-      setTimeout(fireConfetti, 400);
-    });
+          <div class="divider">✦ ✦ ✦</div>
 
-    // Hiệu ứng nghiêng thiệp 3D theo con trỏ chuột
-    const card = document.getElementById('tiltCard');
-    document.addEventListener('mousemove', (e) => {
-      if (window.innerWidth < 768) return; // Tắt nghiêng trên điện thoại để mượt hơn
-      const xAxis = (window.innerWidth / 2 - e.pageX) / 30;
-      const yAxis = (window.innerHeight / 2 - e.pageY) / 30;
-      card.style.transform = `rotateY(${xAxis}deg) rotateX(${yAxis}deg)`;
-    });
+          <!-- 5. LỜI CHÚC MỞ ĐẦU NGẮN GỌN -->
+          <p class="short-wish">
+            Khoảnh khắc khoác lên mình chiếc áo cử nhân chính là trái ngọt xứng đáng cho bao nỗ lực không ngừng nghỉ suốt những năm tháng thanh xuân.
+          </p>
 
-    document.addEventListener('mouseleave', () => {
-      card.style.transform = `rotateY(0deg) rotateX(0deg)`;
-    });
-  </script>
-</body>
-</html>
+          <!-- 6. CÂU TRÍCH DẪN TRUYỀN CẢM HỨNG -->
+          <div class="quote-box">
+            “Tốt nghiệp không phải là điểm kết thúc, mà là vạch xuất phát cho những chân trời rực rỡ nhất của tuổi trẻ.”
+          </div>
+        </div>
+
+        <div class="btn-group">
+
+          
